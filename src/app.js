@@ -1,24 +1,26 @@
 import express from "express";
+import conectarDataBase from "./config/dbConnect.js";
+
+const conexao = await conectarDataBase();
+
+conexao.on("error", (erro) =>{
+    console.error("erro de conexao", erro);
+});
+
+conexao.once("open", ()=>{
+    console.log("Conexao com DB estabelecida");
+});
+
 
 const app = express();
 app.use(express.json());
-
-const livros = [
-    {
-        "id" : 1,
-        "titulo" : "código limpo"
-    },
-    {
-        "id" : 2,
-        "titulo" : "Padroes de Projeto"
-    }
-];
 
 function buscaLivro(id){
     return livros.findIndex(livro => {
         return livro.id === Number(id);
     });
 }
+
 
 app.get("/" , (req, res) => {
     res.status(200).send("Hello World!");
@@ -51,3 +53,4 @@ app.delete("/livros/:id", (req, res) => {
 })
 
 export default app;
+
